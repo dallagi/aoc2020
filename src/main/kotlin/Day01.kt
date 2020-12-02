@@ -1,4 +1,3 @@
-
 // Solves Day 1: Report Repair https://adventofcode.com/2020/day/1
 // The simplest solution would have been to try all possible combinations.
 // This solution is slightly more complex but more efficient, at O(nlogn) time
