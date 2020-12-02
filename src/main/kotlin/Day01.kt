@@ -1,3 +1,8 @@
+
+// Solves Day 1: Report Repair https://adventofcode.com/2020/day/1
+// The simplest solution would have been to try all possible combinations.
+// This solution is slightly more complex but more efficient, at O(nlogn) time
+// complexity for part 1 and O(n^2) for part 2, instead of O(n^2) and O(n^3).
 class Day01 {
     fun solvePart1(input: String): Int? {
         val numbers = parse(input)
