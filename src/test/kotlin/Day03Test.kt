@@ -27,4 +27,30 @@ class Day03Test {
 
         assertEquals(187, Day03().solvePart1(input))
     }
+
+    @Test
+    fun `part2 provided example`() {
+        val input = """
+            ..##.......
+            #...#...#..
+            .#....#..#.
+            ..#.#...#.#
+            .#...##..#.
+            ..#.##.....
+            .#.#.#....#
+            .#........#
+            #.##...#...
+            #...##....#
+            .#..#...#.#
+       """.trimIndent()
+
+        assertEquals(336, Day03().solvePart2(input))
+    }
+
+    @Test
+    fun `part2 actual data`() {
+        val input = Resources.read("03.txt")
+
+        assertEquals(187, Day03().solvePart2(input))
+    }
 }
