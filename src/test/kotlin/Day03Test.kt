@@ -51,6 +51,6 @@ class Day03Test {
     fun `part2 actual data`() {
         val input = Resources.read("03.txt")
 
-        assertEquals(187, Day03().solvePart2(input))
+        assertEquals(4723283400, Day03().solvePart2(input))
     }
 }
