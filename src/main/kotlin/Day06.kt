@@ -1,15 +1,13 @@
 class Day06 {
-    fun solvePart1(input: String): Int {
-        return input
+    fun solvePart1(input: String) =
+        input
             .split("\n\n")
             .sumOf(::allAnswers)
-    }
 
-    fun solvePart2(input: String): Int {
-        return input
+    fun solvePart2(input: String) =
+        input
             .split("\n\n")
             .sumOf(::commonAnswers)
-    }
 
     private fun allAnswers(string: String) =
         string
