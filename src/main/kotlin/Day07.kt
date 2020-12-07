@@ -5,6 +5,12 @@ class Day07 {
         return bagsGraph.countOfBagsThatContain("shiny gold")
     }
 
+    fun solvePart2(input: String): Int {
+        val bagsGraph = BagsGraph.parse(input)
+
+        return bagsGraph.necessaryBagsFor("shiny gold") - 1
+    }
+
 }
 
 private class BagsGraph private constructor(private val relations: Map<String, MutableList<Pair<Int, String>>>) {
@@ -19,6 +25,12 @@ private class BagsGraph private constructor(private val relations: Map<String, M
     }
 
     private fun bagColorsContainedIn(containerBagColor: String) = relations[containerBagColor]!!.map { it.second }
+
+    fun necessaryBagsFor(targetBagColor: String): Int {
+        val contained = relations[targetBagColor]!!
+
+        return 1 + contained.sumOf { it.first * necessaryBagsFor(it.second) }
+    }
 
     companion object {
         fun parse(input: String): BagsGraph {
