@@ -14,23 +14,22 @@ class Day07 {
 }
 
 private class BagsGraph private constructor(private val relations: Map<String, MutableList<Pair<Int, String>>>) {
-    fun countOfBagsThatContain(targetBagColor: String) =
-        relations.keys.count { containerBagColor ->
-            doesContain(containerBagColor, targetBagColor)
+    fun countOfBagsThatContain(target: String) =
+        relations.keys.count { container ->
+            doesContain(container, target)
         }
-
-    private fun doesContain(containerBagColor: String, targetBagColor: String): Boolean {
-        return (targetBagColor in bagColorsContainedIn(containerBagColor))
-                || bagColorsContainedIn(containerBagColor).any { doesContain(it, targetBagColor) }
-    }
-
-    private fun bagColorsContainedIn(containerBagColor: String) = relations[containerBagColor]!!.map { it.second }
 
     fun necessaryBagsFor(targetBagColor: String): Int {
         val contained = relations[targetBagColor]!!
 
         return 1 + contained.sumOf { it.first * necessaryBagsFor(it.second) }
     }
+
+    private fun doesContain(container: String, target: String): Boolean {
+        return (target in bagsContainedIn(container)) || bagsContainedIn(container).any { doesContain(it, target) }
+    }
+
+    private fun bagsContainedIn(containerBagColor: String) = relations[containerBagColor]!!.map { it.second }
 
     companion object {
         fun parse(input: String): BagsGraph {
