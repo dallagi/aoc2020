@@ -3,8 +3,7 @@ import java.lang.RuntimeException
 class Day08 {
     fun solvePart1(input: String) =
         Interpreter(parse(input))
-            .apply { runUntilLoop() }
-            .accumulator
+            .runUntilLoop()
 
     fun solvePart2(input: String): Int {
         val originalInstructions = parse(input)
@@ -13,7 +12,7 @@ class Day08 {
             val interpreter = Interpreter(mutatedInstructions)
 
             runCatching(interpreter::run)
-                .onSuccess { return interpreter.accumulator }
+                .onSuccess { return it }
         }
         return 0
     }
@@ -54,18 +53,19 @@ private data class Instruction(val code: String, val argument: Int)
 private class Interpreter(private val instructions: List<Instruction>) {
     class LoopException(message: String) : RuntimeException(message)
 
-    var accumulator = 0
+    private var accumulator = 0
     private var instructionPointer = 0
     private var instructionsSeen = mutableSetOf<Int>()
 
-    fun runUntilLoop() {
+    fun runUntilLoop(): Int {
         runCatching(::run)
+        return accumulator
     }
 
-    fun run() {
+    fun run(): Int {
         while (true) {
             if (instructionAlreadySeen()) throw LoopException("A loop occured")
-            if (programFinished()) break
+            if (programFinished()) return accumulator
             processInstruction()
         }
     }
@@ -84,7 +84,6 @@ private class Interpreter(private val instructions: List<Instruction>) {
                 instructionPointer++
             }
         }
-
     }
 
     private fun instructionAlreadySeen() = instructionPointer in instructionsSeen
