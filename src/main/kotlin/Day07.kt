@@ -1,19 +1,12 @@
 class Day07 {
-    fun solvePart1(input: String): Int {
-        val bagsGraph = BagsGraph.parse(input)
+    fun solvePart1(input: String) = BagsGraph.parse(input).countOfBagsThatContain("shiny gold")
 
-        return bagsGraph.countOfBagsThatContain("shiny gold")
-    }
-
-    fun solvePart2(input: String): Int {
-        val bagsGraph = BagsGraph.parse(input)
-
-        return bagsGraph.necessaryBagsFor("shiny gold") - 1
-    }
-
+    fun solvePart2(input: String) = BagsGraph.parse(input).necessaryBagsFor("shiny gold") - 1
 }
 
-private class BagsGraph private constructor(private val relations: Map<String, MutableList<Pair<Int, String>>>) {
+private data class Bags(val amount: Int, val color: String)
+
+private class BagsGraph private constructor(private val relations: Map<String, MutableList<Bags>>) {
     fun countOfBagsThatContain(target: String) =
         relations.keys.count { container ->
             doesContain(container, target)
@@ -22,18 +15,18 @@ private class BagsGraph private constructor(private val relations: Map<String, M
     fun necessaryBagsFor(targetBagColor: String): Int {
         val contained = relations[targetBagColor]!!
 
-        return 1 + contained.sumOf { it.first * necessaryBagsFor(it.second) }
+        return 1 + contained.sumOf { it.amount * necessaryBagsFor(it.color) }
     }
 
     private fun doesContain(container: String, target: String): Boolean {
         return (target in bagsContainedIn(container)) || bagsContainedIn(container).any { doesContain(it, target) }
     }
 
-    private fun bagsContainedIn(containerBagColor: String) = relations[containerBagColor]!!.map { it.second }
+    private fun bagsContainedIn(containerBagColor: String) = relations[containerBagColor]!!.map { it.color }
 
     companion object {
         fun parse(input: String): BagsGraph {
-            val relations = mutableMapOf<String, MutableList<Pair<Int, String>>>()
+            val relations = mutableMapOf<String, MutableList<Bags>>()
 
             val rows = input.split("\n")
             for (row in rows) {
@@ -47,7 +40,7 @@ private class BagsGraph private constructor(private val relations: Map<String, M
 
                     val regex = Regex("""(\d+) (.+) bags?""")
                     val (containedCount, containedColor) = regex.find(contained)!!.destructured
-                    relations[containerColor]!!.add(containedCount.toInt() to containedColor)
+                    relations[containerColor]!!.add(Bags(containedCount.toInt(), containedColor))
                 }
             }
             return BagsGraph(relations)
