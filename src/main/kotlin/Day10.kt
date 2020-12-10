@@ -28,27 +28,20 @@ class Day10 {
     private fun countOfPossibleChainsStartingFrom(index: Int, numbers: List<Int>, cache: MutableMap<Int, Long?>): Long {
         cache.getOrDefault(index, null)?.let { return it }
 
-        if (index == numbers.lastIndex) {
-            return 1
+        if (index == numbers.lastIndex) return 1
+
+        return indexOfPossibleNextNumbers(numbers, index)
+            .mapNotNull { nextNumberIndex -> countOfPossibleChainsStartingFrom(nextNumberIndex, numbers, cache) }
+            .sum()
+            .also { cache[index] = it }
+    }
+
+    private fun indexOfPossibleNextNumbers(numbers: List<Int>, startIndex: Int) = sequence {
+        for (i in (startIndex + 1)..(numbers.lastIndex)) {
+            if(numbers[i] - numbers[startIndex] > 3) return@sequence
+
+            yield(i)
         }
-
-        val number = numbers[index]
-        val indexOfPossibleNextNumbers = (index + 1..index + 3)
-
-        return indexOfPossibleNextNumbers.mapNotNull { possibleNextNumberIndex ->
-            numbers
-                .getOrNull(possibleNextNumberIndex)
-                ?.let { possibleNextNumber ->
-                    when (possibleNextNumber) {
-                        in number..(number + 3) -> countOfPossibleChainsStartingFrom(
-                            possibleNextNumberIndex,
-                            numbers,
-                            cache
-                        )
-                        else -> 0
-                    }
-                }
-        }.sum().also { cache[index] = it }
     }
 
     private fun allNumbersFrom(numbers: List<Int>): List<Int> {
