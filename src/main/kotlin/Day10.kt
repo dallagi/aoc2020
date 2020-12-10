@@ -1,29 +1,20 @@
 class Day10 {
-    fun solvePart1(input: String): Int {
-        val differences = differencesBetweenSortedPairs(parse(input))
-        return differences.count { it == 1 } * differences.count { it == 3 }
-    }
+    fun solvePart1(input: String) =
+        differencesBetweenSortedPairs(parse(input)).run {
+            count { it == 1 } * count { it == 3 }
+        }
 
-    fun solvePart2(input: String): Long {
-        return countOfPossibleChains(parse(input))
-    }
+    fun solvePart2(input: String) = countOfPossibleChains(parse(input))
 
-    private fun differencesBetweenSortedPairs(numbers: List<Int>): List<Int> {
-        val allNumbers = allNumbersFrom(numbers)
-
-        return allNumbers
+    private fun differencesBetweenSortedPairs(numbers: List<Int>) =
+        allNumbersFrom(numbers)
             .windowed(2)
             .map(::difference)
-    }
 
     private fun difference(elements: List<Int>) = elements[1] - elements[0]
 
-    private fun countOfPossibleChains(numbers: List<Int>): Long {
-        val allNumbers = allNumbersFrom(numbers)
-        val cache = mutableMapOf<Int, Long?>()
-
-        return countOfPossibleChainsStartingFrom(0, allNumbers, cache)
-    }
+    private fun countOfPossibleChains(numbers: List<Int>) =
+        countOfPossibleChainsStartingFrom(0, allNumbersFrom(numbers), mutableMapOf())
 
     private fun countOfPossibleChainsStartingFrom(index: Int, numbers: List<Int>, cache: MutableMap<Int, Long?>): Long {
         cache.getOrDefault(index, null)?.let { return it }
@@ -36,13 +27,14 @@ class Day10 {
             .also { cache[index] = it }
     }
 
-    private fun indexOfPossibleNextNumbers(numbers: List<Int>, startIndex: Int) = sequence {
-        for (i in (startIndex + 1)..(numbers.lastIndex)) {
-            if(numbers[i] - numbers[startIndex] > 3) return@sequence
+    private fun indexOfPossibleNextNumbers(numbers: List<Int>, startIndex: Int) =
+        sequence {
+            for (i in (startIndex + 1)..(numbers.lastIndex)) {
+                if (numbers[i] - numbers[startIndex] > 3) return@sequence
 
-            yield(i)
+                yield(i)
+            }
         }
-    }
 
     private fun allNumbersFrom(numbers: List<Int>): List<Int> {
         val myAdapter = listOf(numbers.maxOrNull()!! + 3)
